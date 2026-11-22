@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="prototype-version" content="v1.4 · 22 Nov 2026">
+<title>Sewadar Registration — Prototype v1.4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Styled to match the live SRS application (Sewa Summary screen, Nov 2026): light-grey sidebar, maroon accent, Roboto. */
+:root{
+  --srs-primary:#8B1A14; --srs-primary-dark:#6F130E; --srs-primary-tint:#F3E1E1;
+  --srs-bg:#F6F7F9; --srs-surface:#FFFFFF; --srs-border:#E3E5E8; --srs-border-light:#EEF0F2; --srs-row-hover:#F3F7FC;
+  --srs-text:#1F2933; --srs-text-2:#5F6B7A; --srs-text-3:#9AA3AE;
+  --srs-blue:#475569; --srs-blue-bg:#F1F5F9; --srs-green:#2E7D4F; --srs-green-bg:#EEF7F1; --srs-green-badge-bg:#EEF7F1;
+  --srs-amber:#92400E; --srs-amber-bg:#FFF8E6; --srs-red:#B42318; --srs-red-bg:#FDF0EE; --srs-info:#1E40AF; --srs-info-bg:#EEF3FF;
+  --srs-grey:#6B7280; --srs-grey-bg:#F4F5F7;
+  --srs-font:"Roboto",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--srs-bg);color:var(--srs-text);font:400 14px/1.45 var(--srs-font)}
+.app{display:flex;min-height:100vh}
+/* ---- Sidebar ---- */
+.side{width:244px;flex:0 0 244px;background:#F5F5F5;border-right:1px solid var(--srs-border);display:flex;flex-direction:column}
+.brand{background:#E9E9E9;border-bottom:3px solid var(--srs-primary);padding:22px 16px 20px;text-align:center}
+.brand .logo{width:38px;height:44px;margin:0 auto 14px;border:2px solid var(--srs-primary);display:flex;align-items:center;justify-content:center;color:var(--srs-primary);font:700 13px/1 Georgia,serif;letter-spacing:.5px;background:#fff}
+.brand .nm{font-weight:500;font-size:12.5px;letter-spacing:.4px}
+.brand .pd{font-size:11px;color:var(--srs-text-2);margin-top:8px;letter-spacing:.4px}
+.menu{padding:14px 10px;flex:1}
+.mi{display:flex;align-items:center;gap:12px;padding:11px 10px;border-radius:4px;color:#3A4350;font-weight:500;font-size:13.5px;cursor:default}
+.mi svg{width:17px;height:17px;flex:0 0 17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.mi .chev{margin-left:auto;width:12px;height:12px;flex:0 0 12px;color:var(--srs-text-3)}
+.mi.open{background:var(--srs-primary-tint);color:var(--srs-primary)}
+.mi.open .chev{color:var(--srs-primary)}
+.sub{margin:2px 0 6px 6px}
+.sub a{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:4px;color:#3A4350;font-size:13px;font-weight:500;text-decoration:none;cursor:pointer}
+.sub a:hover{background:#ECECEC}
+.sub a.active{background:var(--srs-primary-tint);color:var(--srs-primary)}
+.new-tag{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:#fff;background:var(--srs-primary);border-radius:3px;padding:1px 5px}
+/* ---- Main ---- */
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{background:#FAFAFB;border-bottom:1px solid var(--srs-border);padding:14px 20px;display:flex;justify-content:space-between;align-items:center}
+.topbar h1{font-size:19px;font-weight:500;margin:0}
+.role-pick{display:flex;align-items:center;gap:8px}
+.role-pick .l{font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--srs-text-3);font-weight:700}
+.role-pick select{border:0;background:transparent;font:400 14px var(--srs-font);color:var(--srs-text);cursor:pointer;padding:4px}
+.srs-content{padding:18px 20px}
+.spread{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.row-flex{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.muted{color:var(--srs-text-2)} .tiny{font-size:11.5px}
+.mono{font-variant-numeric:tabular-nums;letter-spacing:.2px}
+.hidden{display:none !important}
+.acts{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.srs-table .acts{flex-wrap:nowrap;gap:2px}
+.srs-table td.mono{white-space:nowrap}
+/* Cards, filter bar, chips */
+.srs-card{background:var(--srs-surface);border:1px solid var(--srs-border-light);border-radius:6px;padding:14px 16px;margin-bottom:14px;box-shadow:0 1px 2px rgba(16,24,40,.05)}
+.srs-card h3{font-size:14px;font-weight:500;margin:0 0 14px}
+.fbar .lbl{color:var(--srs-text-2);font-size:13px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 12px}
+.chipf{border:1px solid var(--srs-border);background:#fff;border-radius:16px;padding:4px 12px;font-size:12px;color:#3A4350}
+.legend{margin-left:auto;display:flex;gap:16px;font-size:12px;color:var(--srs-text-2)}
+.legend i{display:inline-block;width:3px;height:12px;margin-right:6px;vertical-align:-1px}
+/* Buttons */
+.srs-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:4px;border:1px solid var(--srs-primary);font:500 13.5px var(--srs-font);background:var(--srs-primary);color:#fff;cursor:pointer;white-space:nowrap}
+.srs-btn:hover{background:var(--srs-primary-dark)}
+.srs-btn.outline{background:#fff;color:var(--srs-text);border-color:var(--srs-border)}
+.srs-btn.outline:hover{background:#F4F5F7}
+.srs-btn.small{padding:5px 10px;font-size:12.5px}
+.srs-btn.red{background:var(--srs-red);border-color:var(--srs-red)}
+.srs-btn:disabled{background:#E5E7EB;border-color:#E5E7EB;color:var(--srs-text-3);cursor:not-allowed}
+.srs-link-danger{color:var(--srs-primary);background:none;border:0;font:500 13.5px var(--srs-font);cursor:pointer;padding:6px 4px}
+.icon-btn{background:none;border:0;padding:5px;border-radius:4px;cursor:pointer;color:#2B3440;display:inline-flex}
+.icon-btn:hover{background:#ECEEF1}
+.icon-btn svg{width:17px;height:17px;fill:currentColor}
+/* Inputs */
+.srs-input,.srs-select{padding:7px 10px;border:1px solid var(--srs-border);border-radius:4px;font:400 13.5px var(--srs-font);background:#fff;color:var(--srs-text)}
+.srs-input:focus,.srs-select:focus{outline:none;border-color:var(--srs-primary)}
+.srs-field label{display:block;font-size:12.5px;font-weight:500;color:#3A4350;margin-bottom:5px}
+.srs-field .srs-input,.srs-field .srs-select{width:100%}
+.srs-input[readonly],.srs-input:disabled,.srs-select:disabled{background:var(--srs-grey-bg);color:var(--srs-text-2)}
+.err{color:var(--srs-red);font-size:11.5px;margin-top:3px;min-height:14px}
+/* Table */
+.tbl-card{padding:0;overflow:hidden}
+.srs-table-wrap{overflow-x:auto}
+.srs-table{width:100%;min-width:980px;border-collapse:collapse}
+.srs-table th{text-align:left;padding:13px 12px;border-bottom:2px solid var(--srs-border);font-size:13px;font-weight:700;color:var(--srs-text);white-space:nowrap}
+.srs-table td{padding:12px;border-bottom:1px solid var(--srs-border-light);vertical-align:middle;font-size:13.5px}
+.srs-table tbody tr:hover{background:var(--srs-row-hover)}
+.srs-table tr.srs-row td:first-child{box-shadow:inset 3px 0 0 #E0A030}
+.srs-empty{text-align:center;color:var(--srs-text-2);padding:36px}
+.pager{display:flex;justify-content:space-between;align-items:center;padding:12px 4px 0;color:var(--srs-text-2);font-size:13px}
+.pager .pg{display:flex;gap:4px}
+.pager .pg span{border:1px solid var(--srs-border);border-radius:3px;padding:5px 10px;background:#fff;color:var(--srs-text-3)}
+.pager .pg span.on{background:var(--srs-primary);border-color:var(--srs-primary);color:#fff;font-weight:500}
+/* Badges */
+.srs-badge{display:inline-block;padding:3px 9px;border-radius:12px;font-size:11.5px;font-weight:500;white-space:nowrap}
+.srs-badge.assigned{color:var(--srs-amber);background:var(--srs-amber-bg)}
+.srs-badge.closed{color:var(--srs-grey);background:var(--srs-grey-bg)}
+.srs-badge.in-progress{color:var(--srs-info);background:var(--srs-info-bg)}
+.srs-badge.yet-to-start{color:var(--srs-text-2);background:var(--srs-border-light)}
+.srs-badge.primary{color:var(--srs-primary);background:var(--srs-primary-tint)}
+/* Notes */
+.note{border:1px solid var(--srs-border);border-left:3px solid var(--srs-amber);background:var(--srs-amber-bg);color:var(--srs-amber);border-radius:4px;padding:9px 12px;margin-bottom:14px;font-size:12.5px}
+.note.info{border-left-color:var(--srs-blue);background:var(--srs-blue-bg);color:var(--srs-blue)}
+.note.red{border-left-color:var(--srs-red);background:var(--srs-red-bg);color:var(--srs-red)}
+.note.green{border-left-color:var(--srs-green);background:var(--srs-green-bg);color:var(--srs-green)}
+/* Modal + toast */
+.srs-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:1000}
+.srs-modal{background:#fff;border-radius:6px;max-width:480px;width:92%;padding:20px}
+.srs-modal .footer{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}
+.srs-toast{position:fixed;top:18px;right:18px;z-index:1100;background:#fff;border:1px solid var(--srs-border);border-left:3px solid var(--srs-green);padding:12px 14px;border-radius:4px;font-size:13.5px;font-weight:500;box-shadow:0 4px 12px rgba(16,24,40,.12);max-width:420px}
+.srs-toast.warning{border-left-color:var(--srs-amber)} .srs-toast.info{border-left-color:var(--srs-blue)} .srs-toast.error{border-left-color:var(--srs-red)}
+/* Right-side slider */
+.drawer-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:900;opacity:0;pointer-events:none;transition:opacity .2s}
+.drawer-bg.show{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(580px,96vw);background:var(--srs-bg);z-index:901;transform:translateX(100%);transition:transform .25s ease;display:flex;flex-direction:column;border-left:1px solid var(--srs-border)}
+.drawer.show{transform:none;box-shadow:-6px 0 24px rgba(0,0,0,.12)}
+.drawer-head{background:#fff;border-bottom:3px solid var(--srs-primary);padding:14px 20px;display:flex;justify-content:space-between;align-items:center}
+.drawer-head .t{font-size:16px;font-weight:500}
+.drawer-x{background:none;border:0;font-size:18px;cursor:pointer;color:var(--srs-text-2)}
+.drawer-body{padding:18px 20px;overflow-y:auto;flex:1}
+.drawer-foot{background:#fff;border-top:1px solid var(--srs-border);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.step-no{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--srs-primary);color:#fff;font-size:11.5px;font-weight:700;margin-right:8px}
+.step-no.done{background:var(--srs-green)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
+.grid2 .full{grid-column:1/-1}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}
+.kv .k,.klabel{font-size:11.5px;font-weight:500;color:var(--srs-text-2);margin-bottom:2px}
+.gr-big{font:700 24px var(--srs-font);letter-spacing:1px;margin:4px 0 2px}
+.hint{font-size:11.5px;color:var(--srs-text-3);margin-top:10px;line-height:1.6}
+@media(max-width:900px){.side{display:none}}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="side">
+    <div class="brand"><div class="logo">SRS</div><div class="nm">SEWA REPORTING SYSTEM</div><div class="pd">PERIOD: LEAN</div></div>
+    <nav class="menu">
+      <div class="mi "><svg viewBox="0 0 24 24"><path d="M4 15a8 8 0 1 1 16 0"/><path d="M12 15l4-5"/><path d="M3 19h18"/></svg><span>Dashboard</span></div>
+      <div class="mi "><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M8 9h8M8 12h8M8 15h5"/></svg><span>Masters</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="mi open"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.3"/><path d="M3 19c0-3 3-5 6-5s6 2 6 5"/><path d="M15.5 14.2c2.6.2 5 1.800 5 4.300"/></svg><span>Sewa Management</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></div>
+      <div class="sub">
+        <a id="mi-summary" onclick="showPage('summary')">Sewa Summary</a>
+        <a id="mi-reg" onclick="showPage('reg')">Sewadar Registration <span class="new-tag">New</span></a>
+      </div>
+      <div class="mi "><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 19c0-3 3-5 6-5"/><circle cx="17" cy="16" r="2.5"/><path d="M17 12v1.500M17 18.500V20M13.500 16H15M19 16h1.500"/></svg><span>Central Repository</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="mi "><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="2.5"/><circle cx="5.5" cy="10" r="2"/><circle cx="18.500" cy="10" r="2"/><path d="M7 19c0-2.500 2.200-4.500 5-4.500s5 2 5 4.500"/></svg><span>Satsang Data Management</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="mi "><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.500"/><path d="M5 20c0-3.500 3.200-6 7-6s7 2.500 7 6"/></svg><span>Old &amp; Infirm Sangat</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="mi "><svg viewBox="0 0 24 24"><path d="M12 4v10M8 10l4 4 4-4"/><path d="M5 19h14"/></svg><span>Construction</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="mi "><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.500"/><path d="M5 20c0-3.500 3.200-6 7-6s7 2.500 7 6"/></svg><span>User Management</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="mi "><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="1"/><path d="M4 10h16M10 10v9"/></svg><span>Reports &amp; Analytics</span><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="mi "><svg viewBox="0 0 24 24"><path d="M19 12H6M11 7l-5 5 5 5"/></svg><span>Older SRS Version</span></div>
+    </nav>
+  </aside>
+  <div class="main">
+    <div class="topbar">
+      <h1 id="page-title">Sewadar Registration</h1>
+      <div class="role-pick"><span class="l">Prototype · logged in as</span>
+        <select id="role-sel" onchange="setRole(this.value)">
+          <option value="sp">Karnal (C) — Satsang Place</option>
+          <option value="ahq">Karnal — Area Office (AHQ)</option>
+          <option value="bms">Raipur (C) — Satsang Place · menu not enabled for this State</option>
+        </select></div>
+    </div>
+    <div class="srs-content"><div id="view"></div></div>
+  </div>
+</div>
+
+<div class="drawer-bg" id="drawer-bg" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head"><div class="t" id="drawer-title"></div><button class="drawer-x" onclick="closeDrawer()" title="Close">✕</button></div>
+  <div class="drawer-body" id="drawer-body"></div>
+  <div class="drawer-foot" id="drawer-foot"></div>
+</div>
+
+<div class="srs-overlay hidden" id="confirm">
+  <div class="srs-modal" style="max-width:480px">
+    <h3 id="cf-title" style="font-size:14px;margin:0 0 8px"></h3>
+    <div id="cf-body" class="muted"></div>
+    <div class="footer"><button class="srs-btn outline" id="cf-cancel" onclick="closeConfirm()">Cancel</button><button class="srs-btn red" id="cf-ok">Confirm</button></div>
+  </div>
+</div>
+<div id="toast" class="srs-toast hidden"></div>
+
+<script>
+// ====================== SAMPLE DATA (fictional) ======================
+// Stands in for the BMS sewadar database. src: 'EXISTING' = already in BMS before this menu was introduced; 'SRS' = registered through this menu.
+// nr: where the sewadar is currently used on a Nominal Roll (null = not used).
+let bms=[
+ {gr:'HRG000101',nm:'HARJIT SINGH',father:'Gurmukh Singh',sex:'M',dob:'1978-03-12',a4:'4821',colony:'Model Town',city:'Karnal',mob:'98120 44110',centre:'Karnal (C)',area:'Karnal',src:'EXISTING',nr:{status:'Submitted',token:'KNL/HR/201/014/2026'}},
+ {gr:'HRG000102',nm:'RAJINDER KUMAR',father:'Om Parkash',sex:'M',dob:'1969-11-02',a4:'7730',colony:'Sector 13',city:'Karnal',mob:'94160 21877',centre:'Karnal (C)',area:'Karnal',src:'EXISTING',nr:null},
+ {gr:'HRL000061',nm:'SUNITA RANI',father:'Ram Lal',husband:'Rajinder Kumar',sex:'F',dob:'1974-06-25',a4:'1904',colony:'Sector 13',city:'Karnal',mob:'94160 21878',centre:'Karnal (C)',area:'Karnal',src:'EXISTING',nr:{status:'Draft',token:'KNL/HR/201/016/2026'}},
+ {gr:'HRG000103',nm:'SATISH KUMAR',father:'Ram Kishan',sex:'M',dob:'1985-01-19',a4:'5562',colony:'Prem Nagar',city:'Karnal',mob:'98960 30412',centre:'Karnal (C)',area:'Karnal',src:'EXISTING',nr:null},
+ {gr:'HRL000062',nm:'KAMLESH DEVI',father:'Hari Chand',husband:'Satish Kumar',sex:'F',dob:'1988-09-07',a4:'3317',colony:'Prem Nagar',city:'Karnal',mob:'98960 30413',centre:'Karnal (C)',area:'Karnal',src:'EXISTING',nr:null},
+ {gr:'HRG000451',nm:'MANDEEP SINGH',father:'Balwinder Singh',sex:'M',dob:'2001-04-30',a4:'8846',colony:'Ram Nagar',city:'Karnal',mob:'70150 66201',centre:'Karnal (C)',area:'Karnal',src:'SRS',nr:{status:'Submitted',token:'KNL/HR/201/014/2026'}},
+ {gr:'HRL000212',nm:'POOJA SHARMA',father:'Mahesh Sharma',sex:'F',dob:'1998-12-14',a4:'2290',colony:'Sadar Bazar',city:'Karnal',mob:'82950 17340',centre:'Karnal (C)',area:'Karnal',src:'SRS',nr:{status:'Draft',token:'KNL/HR/201/016/2026'}},
+ {gr:'HRG000452',nm:'VIKRAM CHAUHAN',father:'Surender Chauhan',sex:'M',dob:'1993-07-08',a4:'6105',colony:'Char Chaman',city:'Karnal',mob:'99910 52286',centre:'Karnal (C)',area:'Karnal',src:'SRS',nr:null},
+ {gr:'HRG000131',nm:'DALBIR SINGH',father:'Jagat Singh',sex:'M',dob:'1971-02-21',a4:'9043',colony:'Main Bazar',city:'Gharaunda',mob:'94661 80025',centre:'Gharaunda',area:'Karnal',src:'EXISTING',nr:null},
+ {gr:'HRL000075',nm:'SAROJ BALA',father:'Prem Chand',husband:'Dalbir Singh',sex:'F',dob:'1976-08-16',a4:'4478',colony:'Main Bazar',city:'Gharaunda',mob:'94661 80026',centre:'Gharaunda',area:'Karnal',src:'EXISTING',nr:null},
+ {gr:'HRG000453',nm:'ROHIT KUMAR',father:'Naresh Kumar',sex:'M',dob:'2004-10-03',a4:'1582',colony:'Railway Road',city:'Gharaunda',mob:'81680 43397',centre:'Gharaunda',area:'Karnal',src:'SRS',nr:null},
+ {gr:'HRG000144',nm:'JASWANT SINGH',father:'Kartar Singh',sex:'M',dob:'1966-05-11',a4:'7216',colony:'GT Road',city:'Nilokheri',mob:'98130 77642',centre:'Nilokheri',area:'Karnal',src:'EXISTING',nr:null},
+ {gr:'HRL000081',nm:'BIMLA DEVI',father:'Mohan Lal',husband:'Jaswant Singh',sex:'F',dob:'1970-03-29',a4:'3859',colony:'GT Road',city:'Nilokheri',mob:'98130 77643',centre:'Nilokheri',area:'Karnal',src:'EXISTING',nr:null},
+ // another Area — never listed here, but BMS checks against it
+ {gr:'HRG000310',nm:'ANIL GUPTA',father:'Shiv Kumar Gupta',sex:'M',dob:'1982-09-09',a4:'6027',colony:'Model Town',city:'Panipat',mob:'90340 11560',centre:'Panipat (C)',area:'Panipat',src:'EXISTING',nr:null}
+];
+const AREA_CENTRES=['Karnal (C)','Gharaunda','Nilokheri','Assandh'];
+const CENTRE_CITY={'Karnal (C)':'Karnal','Gharaunda':'Gharaunda','Nilokheri':'Nilokheri','Assandh':'Assandh'};
+const ROLES={
+  sp:{role:'Satsang Place',name:'Karnal (C)',scope:'Karnal Area, Haryana',centre:'Karnal (C)',regEnabled:true,office:'Karnal (C)'},
+  ahq:{role:'Area Headquarters',name:'AHQ – Karnal Area',scope:'Karnal Area, Haryana',area:'Karnal',regEnabled:true,office:'AHQ – Karnal'},
+  bms:{role:'Satsang Place',name:'Raipur (C)',scope:'Raipur Area, Chhattisgarh',centre:'Raipur (C)',regEnabled:false,office:'Raipur (C)'}
+};
+const AGE_MIN=10, AGE_MAX=80, STATE_CODE='HR';
+let role='sp', tab='reg', seqG=454, seqL=213, retired=[];
+let flt={q:'',src:'',centre:''};
+
+// ====================== HELPERS ======================
+const $=id=>document.getElementById(id);
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function fmtD(iso){const [y,m,d]=iso.split('-');return `${d}/${m}/${y}`}
+function ageOn(iso){const b=new Date(iso+'T00:00:00'),t=new Date();let a=t.getFullYear()-b.getFullYear();if(t.getMonth()<b.getMonth()||(t.getMonth()===b.getMonth()&&t.getDate()<b.getDate()))a--;return a}
+function toast(msg,kind){const t=$('toast');t.className='srs-toast '+(kind||'');t.textContent=msg;clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.add('hidden'),3500)}
+function confirmBox(title,body,okLabel,fn){$('cf-title').textContent=title;$('cf-body').innerHTML=body;const ok=$('cf-ok');
+  if(fn){ok.classList.remove('hidden');ok.textContent=okLabel;ok.onclick=()=>{closeConfirm();fn()};$('cf-cancel').textContent='Cancel'}
+  else{ok.classList.add('hidden');$('cf-cancel').textContent='Close'}
+  $('confirm').classList.remove('hidden')}
+function closeConfirm(){$('confirm').classList.add('hidden')}
+function openDrawer(title){$('drawer-title').textContent=title;$('drawer-bg').classList.add('show');$('drawer').classList.add('show');document.body.style.overflow='hidden'}
+function closeDrawer(){$('drawer-bg').classList.remove('show');$('drawer').classList.remove('show');document.body.style.overflow='';reg=null;upd=null}
+function scope(){const r=ROLES[role];return bms.filter(s=>r.centre?s.centre===r.centre:s.area===r.area)}
+function relName(s){return s.sex==='M'?'S/o '+s.father:(s.husband?'W/o '+s.husband:'D/o '+s.father)}   // same rule applies on the printed Nominal Roll
+function fhCell(s){return esc(relName(s))}
+function fhKv(s){return `<div><div class="k">Father's Name</div>${esc(s.father)}</div>`+(s.sex==='F'?`<div><div class="k">Husband's Name</div>${s.husband?esc(s.husband):'<span class="muted">Unmarried</span>'}</div>`:'')}
+function srcPill(s){return s.src==='SRS'?'<span class="srs-badge assigned" title="Registered through SRS. Complete details to be filled when BMS is implemented in this State.">Registered in SRS</span>':'<span class="srs-badge closed">Existing record</span>'}
+function nrChip(s){if(!s.nr)return '';return s.nr.status==='Submitted'?' <span class="srs-badge in-progress" title="'+s.nr.token+'">On submitted Nominal Roll</span>':' <span class="srs-badge yet-to-start" title="'+s.nr.token+'">On draft Nominal Roll</span>'}
+
+// ====================== SHELL ======================
+function setRole(r){role=r;const o=ROLES[r];$('mi-reg').classList.toggle('hidden',!o.regEnabled);flt={q:'',src:'',centre:''};showPage(o.regEnabled?'reg':'summary')}
+function showPage(t){tab=t;$('mi-summary').classList.toggle('active',t==='summary');$('mi-reg').classList.toggle('active',t==='reg');
+  $('page-title').textContent=t==='reg'?'Sewadar Registration':'Sewa Summary';
+  if(t==='reg')renderList();
+  else $('view').innerHTML=`<div class="srs-card"><div class="srs-empty">Existing Sewa Summary screen — not part of this prototype.${!ROLES[role].regEnabled?'<br><br><strong style="color:var(--srs-text)">The Sewadar Registration menu is not enabled for this State, so it is not shown under Sewa Management.</strong><br>Sewadars are registered through the full BMS registration.':''}</div></div>`}
+function showTab(t){showPage(t)}
+const IC_EDIT='<svg viewBox="0 0 24 24"><path d="M3 17.200V21h3.800L17.800 9.900l-3.800-3.800L3 17.200zM20.700 7c.4-.4.4-1 0-1.400l-2.300-2.300c-.4-.4-1-.4-1.400 0l-1.800 1.800 3.800 3.800L20.700 7z"/></svg>';
+const IC_DEL='<svg viewBox="0 0 24 24"><path d="M6 19c0 1.100.9 2 2 2h8c1.100 0 2-.9 2-2V7H6v12zM19 4h-3.500l-1-1h-5l-1 1H5v2h14V4z"/></svg>';
+
+// ====================== LISTING ======================
+function renderList(){
+  const o=ROLES[role], all=scope();
+  const q=flt.q.toLowerCase();
+  const rows=all.filter(s=>(!flt.src||s.src===flt.src)&&(!flt.centre||s.centre===flt.centre)&&(!q||s.nm.toLowerCase().includes(q)||s.gr.toLowerCase().includes(q)||s.mob.replace(/\s/g,'').includes(q.replace(/\s/g,''))))
+    .sort((a,b)=>(a._new?-1:0)-(b._new?-1:0)||a.nm.localeCompare(b.nm));
+  const nS=all.filter(s=>s.src==='SRS').length;
+  const tr=rows.map((s,i)=>`<tr class="${s.src==='SRS'?'srs-row':''}">
+    <td>${i+1}</td><td class="mono">${s.gr}</td>
+    <td>${esc(s.nm)}${nrChip(s)}</td><td>${fhCell(s)}</td><td>${s.sex}</td><td>${ageOn(s.dob)}</td>
+    <td>${esc(s.colony)}, ${esc(s.city)}</td><td class="mono">${esc(s.mob)}</td>${o.area?`<td>${s.centre.toUpperCase()}</td>`:''}
+    <td>${srcPill(s)}</td>
+    <td><div class="acts"><button class="icon-btn" title="Update" onclick="startUpdate('${s.gr}')">${IC_EDIT}</button>${s.src==='SRS'?`<button class="icon-btn" title="Delete" onclick="delSewadar('${s.gr}')">${IC_DEL}</button>`:''}</div></td></tr>`).join('');
+  const active=flt.q||flt.src||flt.centre;
+  $('view').innerHTML=`
+    <div class="srs-card fbar"><div class="spread">
+      <div class="row-flex">
+        <input class="srs-input" id="f-q" placeholder="Search name, GR Number or mobile" value="${esc(flt.q)}" oninput="flt.q=this.value;renderList();const e=$('f-q');e.focus();e.setSelectionRange(e.value.length,e.value.length)" style="width:270px">
+        ${active?`<button class="srs-link-danger" onclick="flt={q:'',src:'',centre:''};renderList()">Clear All</button>`:''}
+      </div>
+      <div class="row-flex">
+        ${o.area?`<span class="lbl">Satsang Place:</span><select class="srs-select" onchange="flt.centre=this.value;renderList()"><option value="">All</option>${AREA_CENTRES.map(c=>`<option ${flt.centre===c?'selected':''}>${c}</option>`).join('')}</select>`:''}
+        <span class="lbl">Source:</span><select class="srs-select" onchange="flt.src=this.value;renderList()"><option value="">All</option><option value="EXISTING" ${flt.src==='EXISTING'?'selected':''}>Existing records</option><option value="SRS" ${flt.src==='SRS'?'selected':''}>Registered in SRS</option></select>
+        <button class="srs-btn" onclick="startRegister()">+ Register New Sewadar</button>
+      </div></div></div>
+    <div class="chips">
+      <span class="chipf">Badge Type: Permanent</span>
+      <span class="chipf">Existing records: ${all.length-nS}</span>
+      <span class="chipf">Registered in SRS: ${nS}</span>
+      <span class="legend"><span><i style="background:#E0A030"></i>Registered in SRS, details incomplete</span></span>
+    </div>
+    <div class="srs-card tbl-card"><div class="srs-table-wrap"><table class="srs-table">
+      <thead><tr><th>Sr.No.</th><th>GR Number</th><th>Name</th><th>Father's / Husband's Name</th><th>M/F</th><th>Age</th><th>Area/Colony, City</th><th>Mobile</th>${o.area?'<th>Centre</th>':''}<th>Source</th><th>Actions</th></tr></thead>
+      <tbody>${tr||`<tr><td colspan="11" class="srs-empty">No sewadars found.</td></tr>`}</tbody></table></div></div>
+    <div class="pager"><span>${rows.length?'1–'+rows.length:'0'} of ${all.length}</span><div class="pg"><span>‹ Prev</span><span class="on">1</span><span>Next ›</span></div></div>
+    <div class="muted tiny" style="margin-top:14px">Sewadars registered here get a GR Number from BMS and become available for Nominal Rolls. Open Sewadars continue to be added inside the Nominal Roll itself.</div>`;
+}
+
+// ====================== REGISTER (slider) ======================
+let reg=null;
+function startRegister(){
+  const o=ROLES[role];
+  reg={step:1,chk:{a4:'',first:'',dob:'',sex:''},result:null,match:null,msg:'',
+       f:{nm:'',father:'',married:'',husband:'',colony:'',city:o.centre?CENTRE_CITY[o.centre]:'',mob:'',centre:o.centre||''},err:{},done:null};
+  renderReg();openDrawer('Register New Sewadar');
+}
+function regSync(){
+  if(!reg)return;
+  if(reg.step===1){['a4','first','dob','sex'].forEach(k=>{const e=$('rc-'+k);if(e)reg.chk[k]=e.value.trim()})}
+  else if(reg.step===2){['nm','father','married','husband','colony','city','mob','centre'].forEach(k=>{const e=$('rf-'+k);if(e)reg.f[k]=e.value.trim()})}
+}
+function regEdited(){reg.result=null;reg.match=null;const b=$('rc-result');if(b)b.innerHTML='';regFoot()}
+// --- Stands in for the BMS service. SRS only sends the four fields and shows what BMS returns. ---
+function bmsCheck(c){
+  const age=ageOn(c.dob);
+  if(age<AGE_MIN||age>AGE_MAX)return {result:'age',msg:`Age is ${age} years. A Permanent Badge sewadar must be between ${AGE_MIN} and ${AGE_MAX} years.`};
+  const m=bms.find(s=>s.a4===c.a4&&s.dob===c.dob&&s.sex===c.sex&&s.nm.split(' ')[0].toLowerCase()===c.first.split(' ')[0].toLowerCase());
+  return m?{result:'match',match:m}:{result:'clear'};
+}
+function runCheck(){
+  regSync();const c=reg.chk;
+  if(!/^\d{4}$/.test(c.a4)||!c.first||!c.dob||!c.sex){reg.result='invalid';reg.msg='All four fields are needed. Aadhaar last 4 must be exactly 4 digits.';return renderReg()}
+  if(new Date(c.dob+'T00:00:00')>new Date()){reg.result='invalid';reg.msg='The date of birth is in the future.';return renderReg()}
+  const r=bmsCheck(c);reg.result=r.result;reg.match=r.match||null;reg.msg=r.msg||'';
+  renderReg();
+}
+function toForm(){regSync();reg.step=2;if(!reg.f.nm)reg.f.nm=reg.chk.first.toUpperCase();renderReg()}
+function backToCheck(){regSync();reg.step=1;renderReg()}
+function submitReg(){
+  regSync();const f=reg.f,c=reg.chk,e={};
+  if(!f.nm)e.nm='Kindly enter the full name.';
+  else if(f.nm.split(' ')[0].toLowerCase()!==c.first.split(' ')[0].toLowerCase())e.nm=`The name should begin with the first name that was checked (${c.first}).`;
+  if(!f.father)e.father="Kindly enter the father's name.";
+  if(c.sex==='F'&&!f.married)e.married='Kindly select the marital status.';
+  if(c.sex==='F'&&f.married==='Y'&&!f.husband)e.husband="Kindly enter the husband's name.";
+  if(!f.colony)e.colony='Kindly enter the area / colony.';
+  if(!f.city)e.city='Kindly enter the city.';
+  if(!/^\d{10}$/.test(f.mob.replace(/\s/g,'')))e.mob='Kindly enter a 10-digit mobile number.';
+  if(!f.centre)e.centre='Kindly select the Satsang Place.';
+  reg.err=e;if(Object.keys(e).length)return renderReg();
+  // BMS re-checks at the time of saving, then issues the GR Number
+  const r=bmsCheck(c);if(r.result!=='clear'){reg.step=1;reg.result=r.result;reg.match=r.match||null;reg.msg=r.msg||'';return renderReg()}
+  const gr=STATE_CODE+(c.sex==='M'?'G':'L')+String(c.sex==='M'?seqG++:seqL++).padStart(6,'0');
+  const d=f.mob.replace(/\s/g,'');
+  const rec={gr,nm:f.nm.toUpperCase(),father:f.father,husband:(c.sex==='F'&&f.married==='Y'?f.husband:''),sex:c.sex,dob:c.dob,a4:c.a4,colony:f.colony,city:f.city,mob:d.slice(0,5)+' '+d.slice(5),centre:f.centre,area:'Karnal',src:'SRS',nr:null,_new:true};
+  bms.push(rec);reg.step=3;reg.done=rec;renderReg();renderList();
+}
+function regFoot(){
+  let h='';
+  if(reg.step===1)h=`<button class="srs-btn outline" onclick="closeDrawer()">Cancel</button><div class="acts"><button class="srs-btn outline" onclick="runCheck()">Check with BMS</button><button class="srs-btn" ${reg.result==='clear'?'':'disabled'} onclick="toForm()">Continue →</button></div>`;
+  else if(reg.step===2)h=`<button class="srs-btn outline" onclick="backToCheck()">← Back</button><button class="srs-btn" onclick="submitReg()">Register Sewadar</button>`;
+  else h=`<button class="srs-btn outline" onclick="closeDrawer()">Close</button><button class="srs-btn" onclick="startRegister()">Register Another</button>`;
+  $('drawer-foot').innerHTML=h;
+}
+function matchCard(m){
+  const mine=scope().some(s=>s.gr===m.gr);
+  return `<div class="note red"><strong>Already registered — a new registration is not possible.</strong> BMS found an existing sewadar with these four details.</div>
+    <div class="srs-card" style="padding:16px"><div class="kv">
+      <div><div class="k">Name</div><strong>${esc(m.nm)}</strong></div><div><div class="k">GR Number</div><span class="mono">${m.gr}</span></div>
+      ${fhKv(m)}<div><div class="k">Gender · Date of Birth</div>${m.sex==='M'?'Male':'Female'} · ${fmtD(m.dob)}</div>
+      <div><div class="k">Satsang Place</div>${m.centre}</div><div><div class="k">Area</div>${m.area}</div>
+    </div>
+    <div class="muted tiny" style="margin-top:12px">${mine?'This sewadar is in your list and can be added to a Nominal Roll. Use Update to change the mobile number, address or marital status.':'This sewadar is registered at another Satsang Place. No change can be made from here.'}</div></div>`;
+}
+function renderReg(){
+  const c=reg.chk,f=reg.f,e=reg.err,o=ROLES[role];
+  let h='';
+  if(reg.step===1){
+    let res='';
+    if(reg.result==='invalid')res=`<div class="note red">${reg.msg}</div>`;
+    if(reg.result==='age')res=`<div class="note red"><strong>Not eligible.</strong> ${reg.msg}</div>`;
+    if(reg.result==='match')res=matchCard(reg.match);
+    if(reg.result==='clear')res=`<div class="note green"><strong>No existing record found.</strong> The age is within ${AGE_MIN}–${AGE_MAX} years. Continue to enter the remaining details.</div>`;
+    h=`<div class="srs-card"><h3><span class="step-no">1</span>Check with BMS</h3>
+      <div class="muted" style="margin-bottom:16px">These four details are sent to BMS, which checks them together against all registered sewadars and against the age limit.</div>
+      <div class="grid2">
+        <div class="srs-field"><label>Aadhaar — last 4 digits *</label><input class="srs-input" id="rc-a4" maxlength="4" inputmode="numeric" value="${esc(c.a4)}" oninput="regEdited()"></div>
+        <div class="srs-field"><label>First Name *</label><input class="srs-input" id="rc-first" value="${esc(c.first)}" oninput="regEdited()"></div>
+        <div class="srs-field"><label>Date of Birth *</label><input class="srs-input" type="date" id="rc-dob" value="${c.dob}" oninput="regEdited()"></div>
+        <div class="srs-field"><label>Gender *</label><select class="srs-select" id="rc-sex" onchange="regEdited()"><option value="">Select</option><option value="M" ${c.sex==='M'?'selected':''}>Male</option><option value="F" ${c.sex==='F'?'selected':''}>Female</option></select></div>
+      </div>
+      <div class="srs-field" style="margin-top:16px"><label>Badge Type</label><input class="srs-input" value="Permanent" readonly></div>
+    </div>
+    <div id="rc-result">${res}</div>
+    <div class="hint"><strong>Prototype — try these:</strong><br>
+      Existing sewadar in this Satsang Place: 4821 · Harjit · 12/03/1978 · Male<br>
+      Existing sewadar in another Area: 6027 · Anil · 09/09/1982 · Male<br>
+      Outside age limit: any details with a date of birth in 2020<br>
+      New sewadar: any other combination</div>`;
+  } else if(reg.step===2){
+    h=`<div class="srs-card" style="padding:16px"><div class="spread"><div><span class="step-no done">✓</span><strong>Checked with BMS — no existing record</strong></div></div>
+      <div class="kv" style="margin-top:12px">
+        <div><div class="k">Aadhaar last 4</div>••••&nbsp;${esc(c.a4)}</div><div><div class="k">First Name</div>${esc(c.first)}</div>
+        <div><div class="k">Date of Birth</div>${fmtD(c.dob)} <span class="muted tiny">(${ageOn(c.dob)} years)</span></div><div><div class="k">Gender</div>${c.sex==='M'?'Male':'Female'}</div>
+      </div></div>
+    <div class="srs-card"><h3><span class="step-no">2</span>Details needed for the Nominal Roll</h3>
+      <div class="grid2">
+        <div class="srs-field full"><label>Full Name *</label><input class="srs-input" id="rf-nm" value="${esc(f.nm)}"><div class="err">${e.nm||''}</div></div>
+        <div class="srs-field full"><label>Father's Name *</label><input class="srs-input" id="rf-father" value="${esc(f.father)}"><div class="err">${e.father||''}</div></div>
+        ${c.sex==='F'?`<div class="srs-field"><label>Marital Status *</label><select class="srs-select" id="rf-married" onchange="regSync();renderReg()"><option value="">Select</option><option value="N" ${f.married==='N'?'selected':''}>Unmarried</option><option value="Y" ${f.married==='Y'?'selected':''}>Married</option></select><div class="err">${e.married||''}</div></div>
+        <div class="srs-field">${f.married==='Y'?`<label>Husband's Name *</label><input class="srs-input" id="rf-husband" value="${esc(f.husband)}"><div class="err">${e.husband||''}</div>`:''}</div>`:''}
+        <div class="srs-field"><label>Area / Colony *</label><input class="srs-input" id="rf-colony" value="${esc(f.colony)}"><div class="err">${e.colony||''}</div></div>
+        <div class="srs-field"><label>City *</label><input class="srs-input" id="rf-city" value="${esc(f.city)}"><div class="err">${e.city||''}</div></div>
+        <div class="srs-field"><label>Mobile No. *</label><input class="srs-input" id="rf-mob" maxlength="11" inputmode="numeric" value="${esc(f.mob)}"><div class="err">${e.mob||''}</div></div>
+        <div class="srs-field"><label>Satsang Place *</label>${o.centre?`<input class="srs-input" id="rf-centre" value="${o.centre}" readonly>`:`<select class="srs-select" id="rf-centre"><option value="">Select</option>${AREA_CENTRES.map(x=>`<option ${f.centre===x?'selected':''}>${x}</option>`).join('')}</select>`}<div class="err">${e.centre||''}</div></div>
+      </div>
+      <div class="note" style="margin:8px 0 0">After registration only the <strong>mobile number, address${c.sex==='F'?' and marital status with husband\'s name':''}</strong> can be changed. For any other correction the entry has to be deleted and registered afresh, so kindly check the details before saving.</div>
+    </div>`;
+  } else {
+    const r=reg.done;
+    h=`<div class="note green"><strong>Sewadar registered in BMS.</strong> The sewadar is now available for Nominal Rolls.</div>
+    <div class="srs-card"><div class="klabel">GR Number issued by BMS</div><div class="gr-big">${r.gr}</div>
+      <div class="kv" style="margin-top:16px">
+        <div><div class="k">Name</div><strong>${esc(r.nm)}</strong></div>${fhKv(r)}
+        <div><div class="k">Gender · Date of Birth</div>${r.sex==='M'?'Male':'Female'} · ${fmtD(r.dob)}</div><div><div class="k">Mobile No.</div>${esc(r.mob)}</div>
+        <div><div class="k">Address</div>${esc(r.colony)}, ${esc(r.city)}</div><div><div class="k">Satsang Place</div>${r.centre}</div>
+      </div>
+      <div style="margin-top:16px">${srcPill(r)}</div>
+      <div class="muted tiny" style="margin-top:8px">Marked in BMS as registered through SRS with incomplete details, for completion when BMS is implemented in this State.</div></div>`;
+  }
+  $('drawer-body').innerHTML=h;regFoot();
+}
+
+// ====================== UPDATE (slider) ======================
+let upd=null;
+function startUpdate(gr){
+  const s=bms.find(x=>x.gr===gr);upd={gr,err:{}};
+  $('drawer-body').innerHTML=updHtml(s,{mob:s.mob,colony:s.colony,city:s.city,married:s.husband?'Y':'N',husband:s.husband||''});
+  $('drawer-foot').innerHTML=`<button class="srs-btn outline" onclick="closeDrawer()">Cancel</button><button class="srs-btn" onclick="saveUpdate()">Save Changes</button>`;
+  openDrawer('Update Sewadar Details');
+}
+function updHtml(s,v){const e=upd.err;
+  return `<div class="srs-card" style="padding:16px"><div class="spread"><div><div class="klabel">GR Number</div><div class="gr-big" style="font-size:20px">${s.gr}</div></div>${srcPill(s)}</div>
+      <div class="kv" style="margin-top:12px">
+        <div><div class="k">Name</div><strong>${esc(s.nm)}</strong></div><div><div class="k">Father's Name</div>${esc(s.father)}</div>
+        <div><div class="k">Gender · Date of Birth</div>${s.sex==='M'?'Male':'Female'} · ${fmtD(s.dob)}</div><div><div class="k">Aadhaar last 4</div>••••&nbsp;${s.a4}</div>
+        <div><div class="k">Satsang Place</div>${s.centre}</div><div><div class="k">Badge Type</div>Permanent</div>
+      </div>
+      <div class="muted tiny" style="margin-top:12px">These details cannot be changed here. ${s.src==='SRS'?'If any of them is incorrect, delete this entry and register the sewadar afresh.':'This is an existing record and cannot be deleted from here.'}</div></div>
+    <div class="srs-card"><h3>Details that can be changed</h3>
+      <div class="grid2">
+        <div class="srs-field full"><label>Mobile No. *</label><input class="srs-input" id="uf-mob" maxlength="11" inputmode="numeric" value="${esc(v.mob)}" style="max-width:240px"><div class="err">${e.mob||''}</div></div>
+        <div class="srs-field"><label>Area / Colony *</label><input class="srs-input" id="uf-colony" value="${esc(v.colony)}"><div class="err">${e.colony||''}</div></div>
+        <div class="srs-field"><label>City *</label><input class="srs-input" id="uf-city" value="${esc(v.city)}"><div class="err">${e.city||''}</div></div>
+        ${s.sex==='F'?`<div class="srs-field"><label>Marital Status *</label><select class="srs-select" id="uf-married" onchange="updRedraw()"><option value="N" ${v.married==='N'?'selected':''}>Unmarried</option><option value="Y" ${v.married==='Y'?'selected':''}>Married</option></select><div class="err"></div></div>
+        <div class="srs-field">${v.married==='Y'?`<label>Husband's Name *</label><input class="srs-input" id="uf-husband" value="${esc(v.husband)}"><div class="err">${e.husband||''}</div>`:''}</div>`:''}
+      </div></div>`}
+function updRead(){const g=id=>{const el=$(id);return el?el.value.trim():''};return {mob:g('uf-mob'),colony:g('uf-colony'),city:g('uf-city'),married:g('uf-married')||'N',husband:g('uf-husband')}}
+function updRedraw(){const s=bms.find(x=>x.gr===upd.gr);$('drawer-body').innerHTML=updHtml(s,updRead())}
+function saveUpdate(){
+  const s=bms.find(x=>x.gr===upd.gr), v=updRead(), e={};
+  const d=v.mob.replace(/\s/g,'');
+  if(!/^\d{10}$/.test(d))e.mob='Kindly enter a 10-digit mobile number.';
+  if(!v.colony)e.colony='Kindly enter the area / colony.';
+  if(!v.city)e.city='Kindly enter the city.';
+  if(s.sex==='F'&&v.married==='Y'&&!v.husband)e.husband="Kindly enter the husband's name.";
+  upd.err=e;if(Object.keys(e).length){$('drawer-body').innerHTML=updHtml(s,v);return}
+  s.mob=d.slice(0,5)+' '+d.slice(5);s.colony=v.colony;s.city=v.city;if(s.sex==='F')s.husband=v.married==='Y'?v.husband:'';
+  const nm=s.nm;closeDrawer();renderList();toast(`Details of ${nm} updated in BMS.`);
+}
+
+// ====================== DELETE ======================
+function delSewadar(gr){
+  const s=bms.find(x=>x.gr===gr);
+  if(s.src!=='SRS')return;   // existing records are never deletable from here
+  if(s.nr&&s.nr.status==='Submitted')
+    return confirmBox('This sewadar cannot be deleted',`<strong style="color:var(--srs-text)">${esc(s.nm)}</strong> (${s.gr}) is on a <strong>submitted</strong> Nominal Roll <span class="mono">${s.nr.token}</span>. A sewadar who has been deployed on a submitted Nominal Roll cannot be deleted.`,'',null);
+  const extra=s.nr?`<br><br><span style="color:var(--srs-amber)">This sewadar is on the <strong>draft</strong> Nominal Roll <span class="mono">${s.nr.token}</span> and will be removed from it.</span>`:'';
+  confirmBox('Delete this sewadar?',`<strong style="color:var(--srs-text)">${esc(s.nm)}</strong> (${s.gr}) will be removed from BMS. The GR Number is retired and will not be issued again; registering the sewadar afresh gives a new GR Number.${extra}`,'Delete',()=>{
+    bms=bms.filter(x=>x.gr!==gr);retired.push(gr);renderList();toast(`${s.nm} deleted. GR Number ${gr} retired.`,'warning')});
+}
+
+setRole('sp');
+</script>
+</body>
+</html>
